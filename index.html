@@ -838,5 +838,47 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // 1. הגדרת החיבור - החלף בפרטים שלך מ-Supabase Settings -> API
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 2. פונקציה לשליחת הטופס
+        // וודא שלתגית ה-form שלך ב-HTML יש id="leadForm"
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form'); // תופס את הטופס הראשון בדף
+            
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    // איסוף הנתונים מהשדות (וודא שה-id של כל שדה תואם לשמות כאן)
+                    const formData = {
+                        name: document.getElementById('name')?.value || '',
+                        email: document.getElementById('email')?.value || '',
+                        phone: document.getElementById('phone')?.value || '',
+                        business_field: document.getElementById('business')?.value || '',
+                        management_tool: document.getElementById('tool')?.value || '',
+                        challenge: document.getElementById('challenge')?.value || '',
+                        referral_source: document.getElementById('referral')?.value || ''
+                    };
+
+                    const { error } = await supabaseClient
+                        .from('leads')
+                        .insert([formData]);
+
+                    if (error) {
+                        alert("שגיאה בשליחה: " + error.message);
+                    } else {
+                        alert("הפרטים נשלחו בהצלחה! ניצור איתך קשר בהקדם.");
+                        form.reset();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
