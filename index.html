@@ -4,77 +4,92 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>NM - Automation & AI Agency</title>
-    <meta name="description" content="אוטומציה עסקית ופתרונות בינה מלאכותית לעסקים קטנים ובינוניים. חוסכים זמן, מונעים טעויות ומגדילים רווחיות.">
+    <meta name="description" content="אוטומציה עסקית ופתרונות בינה מלאכותית לעסקים קטנים ובינוניים.">
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
-            fontFamily: {
-              sans: ['Assistant', 'sans-serif'],
-              display: ['Assistant', 'sans-serif'],
-            },
+            fontFamily: { sans: ['Assistant', 'sans-serif'] },
             colors: {
-              brand: {
-                ink: '#01161E',      // Ink Black - Primary Text / Dark BG
-                teal: '#124559',     // Dark Teal - Primary Action / Headings
-                airforce: '#598392', // Air Force Blue - Secondary / Icons
-                ash: '#AEC3B0',      // Ash Grey - Accents / Light BG
-                beige: '#EFF6E0',    // Lightest - Backgrounds
-              }
+              brand: { ink: '#01161E', teal: '#124559', airforce: '#598392', ash: '#AEC3B0', beige: '#EFF6E0' }
             }
           }
         }
       }
     </script>
 
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-      body {
-        font-family: 'Assistant', sans-serif;
-      }
-      /* Smooth scrolling */
-      html {
-        scroll-behavior: smooth;
-      }
-      /* Custom Animations */
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      @keyframes slideInFromTop {
-        from { transform: translateY(-10px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      .animate-in {
-        animation: fadeIn 0.3s ease-out forwards;
-      }
-      .slide-in-from-top-2 {
-        animation: slideInFromTop 0.3s ease-out forwards;
-      }
+      body { font-family: 'Assistant', sans-serif; scroll-behavior: smooth; margin:0; }
+      .animate-in { animation: fadeIn 0.8s ease-out forwards; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@19.2.3",
-    "react-dom": "https://esm.sh/react-dom@19.2.3",
-    "react-dom/client": "https://esm.sh/react-dom@19.2.3/client",
-    "lucide-react": "https://esm.sh/lucide-react@0.462.0",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
-  }
-}
-</script>
 </head>
 <body class="bg-white text-brand-ink antialiased">
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-</body>
-</html>
+
+    <script type="text/babel" data-type="module">
+        // ייבוא אייקונים מ-Lucide
+        import { Workflow, Bot, LayoutDashboard, CheckCircle, PlusCircle, Send } from 'https://esm.sh/lucide-react@0.462.0';
+
+        const { useState, useEffect, useRef } = React;
+
+        // --- 1. מפתחות SUPABASE (החלף בפרטים שלך) ---
+        const SUPABASE_URL = 'gwhzfmhrtgxoxyxgkpvp'; 
+        const SUPABASE_KEY = 'sb_publishable_RN3uX1YjymWD1BQ8UC55Jw_X9vMO86f';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- COMPONENTS ---
+
+        const Header = () => (
+            <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-brand-ash/20 py-4">
+                <div className="container mx-auto px-6 flex justify-between items-center">
+                    <span className="text-3xl font-black text-brand-teal tracking-tighter">NM</span>
+                    <button onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})} 
+                            className="bg-brand-ink text-white px-5 py-2 rounded-lg font-bold hover:bg-brand-teal transition-all">
+                        דברו איתי
+                    </button>
+                </div>
+            </header>
+        );
+
+        const Hero = () => (
+            <section className="relative pt-32 pb-20 bg-brand-ink text-center text-white overflow-hidden">
+                <div className="container mx-auto px-6 relative z-10">
+                    <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight animate-in">
+                        מפסיקים לבזבז זמן על <br/>
+                        <span className="text-brand-ash">עבודה ידנית שוחקת</span>
+                    </h1>
+                    <p className="text-xl md:text-2xl text-brand-ash/80 max-w-3xl mx-auto font-medium mb-10">
+                        אוטומציה עסקית ופתרונות בינה מלאכותית שתפורים בדיוק לעסק שלכם.
+                    </p>
+                    <button onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})} 
+                            className="bg-brand-teal text-white px-10 py-4 rounded-xl font-bold text-xl shadow-xl hover:scale-105 transition-transform">
+                        בואו נתחיל
+                    </button>
+                </div>
+                <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 blur-3xl rounded-full"></div>
+            </section>
+        );
+
+        const Services = () => {
+            const items = [
+                { title: 'אוטומציה עסקית', icon: <Workflow size={32}/>, desc: 'חיבור בין מערכות (CRM, הנהלת חשבונות) ליצירת זרימת עבודה אוטומטית.' },
+                { title: 'סוכני AI חכמים', icon: <Bot size={32}/>, desc: 'שילוב ChatGPT ובינה מלאכותית לשירות לקוחות ומכירות 24/7.' },
+                { title: 'דשבורדים חכמים', icon: <LayoutDashboard size={32}/>, desc: 'ריכוז כל נתוני העסק במקום אחד המאפשר קבלת החלטות בזמן אמת.' }
+            ];
+            return (
+                <section className="py-24 bg-brand-beige">
+                    <div className="container mx-auto px-6">
+                        <h2 className="text-3xl md:text-5xl font-bold text-brand-ink mb-16 text-center">הכלים שאני מציע</h2>
+                        <div className="grid md:grid-cols-3 gap-8">
+                            {items.map((item, i) => (
+                                <div key={i} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-brand-ash/20">
+                                    <div className
